@@ -17,17 +17,31 @@ function Login() {
     try {
       const getUser = await getByName(data.username);
 
-      if (
-        getUser.data[0].password !== data.password ||
-        getUser.data[0].username !== data.username
-      ) {
+     
+
+      if (!getUser.data || getUser.data.length === 0) {
+        setErrorMessage('User not found');
+        return;
+      }
+
+      const userFound = getUser.data.find(
+        (user) => user.username === data.username
+      );
+
+      if (!userFound) {
+        setErrorMessage('User not found');
+        return;
+      }
+     
+
+      if (userFound.password !== data.password) {
         setErrorMessage('Invalid username or password');
         return;
       }
       const user = {
-        username: getUser.data[0].username,
-        email: getUser.data[0].email,
-        id: getUser.data[0].id,
+        username: userFound.username,
+        email: userFound.email,
+        id: userFound.id,
         isLoggedIn: true,
       };
 
